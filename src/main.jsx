@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Root, {loader as rootLoader, action as rootAction} from './Root.jsx'
+import Root, { loader as rootLoader, action as rootAction } from './Root.jsx'
 import './index.css'
 import { Provider } from 'react-redux'
 import store from './store.js'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import ErrorPage from './ErrorPage.jsx'
-import Contact, {loader as contactLoader} from './routes/Contact.jsx'
-import EditContact, {action as editAction} from './routes/edit.jsx'
+import Contact, { loader as contactLoader } from './routes/Contact.jsx'
+import EditContact, { action as editAction } from './routes/edit.jsx'
+import { action as destroyAction } from "./routes/destroy";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         element: <EditContact />,
         loader: contactLoader,
         action: editAction,
+      },
+      {
+        path: "contacts/:contactId/destroy",
+        action: destroyAction,
       }
     ]
   },

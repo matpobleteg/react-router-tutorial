@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Form, Link, Outlet, useLoaderData } from 'react-router-dom'
+import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from 'react-router-dom'
 import { getContacts, createContact } from './contact'
 
 export async function action() {
   const contact = await createContact();
-  return { contact }
+  return redirect(`/contacts/${contact.id}/edit`)
 }
 export async function loader() {
   const contacts = await getContacts();
@@ -13,6 +13,7 @@ export async function loader() {
 function App() {
 
   const { contacts } = useLoaderData();
+  const navigation = useNavigation()
 
   return (
     <>
@@ -46,7 +47,14 @@ function App() {
             <ul>
               {contacts.map((contact) => (
                 <li key={contact.id}>
-                  <Link to={`contacts/${contact.id}`}>
+                  <NavLink to={`contacts/${contact.id}`}
+                    className={({ isActive, isPending }) =>
+                      isActive
+                        ? "active"
+                        : isPending
+                          ? "pending"
+                          : ""
+                    }>
                     {contact.first || contact.last ? (
                       <>
                         {contact.first} {contact.last}
@@ -55,7 +63,7 @@ function App() {
                       <i>No Name</i>
                     )}{" "}
                     {contact.favorite && <span>★</span>}
-                  </Link>
+                  </NavLink>
                 </li>
               ))}
             </ul>
@@ -66,7 +74,7 @@ function App() {
           )}
         </nav>
       </div>
-      <div id="detail">
+      <div id="detail" className={navigation.state === "loading" ? "loading" : ""}>
         <Outlet />
       </div>
     </>
